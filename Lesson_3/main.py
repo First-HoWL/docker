@@ -1,64 +1,45 @@
 import requests
 from colorama import Fore, Back, Style, init
 import time
-# GH_BRANCH = "pixelrun%2Bserver"
-# GH_REPO = "MishaPetrovskui/SFML_MainPlatformer"
-# GH_API = f"https://api.github.com/repos/{GH_REPO}/commits?sha={GH_BRANCH}&per_page=1"
-
-# GH_API, { headers: { Accept: "application/vnd.github.v3+json" } }
+import json
+import threading
+from flask import Flask, jsonify
+from flask_cors import CORS
 
 init(autoreset=True)
 
 
-repositoryAuthor = input("Author: ") 
-repository = input("Repository: ") 
 
-GH_API = f"https://api.github.com/repos/{repositoryAuthor}/{repository}/commits?per_page=1"
+config = {}
+with open("data/config.json", "r", encoding="utf-8") as file:
+    config = json.load(file)
+delay = config.get("delay")
+url = config.get("endpoint")
 
-response = requests.get(GH_API, headers={ "Accept": "application/vnd.github.v3+json" })
-
-
-
-if response.status_code == 200:
-    data = response.json()
-    lastcommit = data[0]["node_id"]
-    print(lastcommit)
+def task(resp):
     while (True):
-        time.sleep(5)
-        resp = requests.get(GH_API, headers={ "Accept": "application/vnd.github.v3+json" })
-        if resp.status_code == 200:
-            if lastcommit != resp.json()[0]["node_id"]:
-                print(Fore.RED + "NEW COMMIT!")
-                print(resp.json()[0]["node_id"])
-                lastcommit = resp.json()[0]["node_id"]
-            else:
-                print("Nothing was happend!")
-else:
-    print(response.status_code)
+        r = requests.get(url,{
+            "ids": ",".join(config.get("coins")),
+            "vs_currencies": ",".join(config.get("vs_currencies"))
+        })
+        if r.ok:
+            resp.clear()
+            resp.update(r.json())
+        time.sleep(delay)
 
+resp = {}
+thread1 = threading.Thread(target=task, args=(resp,))
+thread1.start() 
 
+app = Flask(__name__)
+CORS(app)
 
-# v 0.1.3
+@app.route("/")
+def hello_world():
+    return resp
 
-# url = "https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/"
-# rate = ""
-
-# first = input("First currency: ")
-
-# response = requests.get(url + first + ".json")
-
-# if response.status_code == 200:
-#     data = response.json()
-#     rate = data[first]
-#     # print(data[first])
-#     second = input("Second currency: ")
-#     finallRate = rate[second]
-#     count = int(input("Count: "))
-#     print(Fore.GREEN + str((count * finallRate)))
-#     print("information for " + data["date"])
-# else:
-#     print(response.status_code)
-
+if __name__ == "__main__":
+    app.run(debug=True, host="0.0.0.0", port=5000)
 
 
 # docker build . -t my-hello-world:0.0.1

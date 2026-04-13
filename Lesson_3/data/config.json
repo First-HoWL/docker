@@ -1,0 +1,11 @@
+{
+    "endpoint": "https://api.coingecko.com/api/v3/simple/price",
+    "coins":[
+        "bitcoin",
+        "ethereum"
+    ],
+    "vs_currencies":[
+        "usd"
+    ],
+    "delay": 60
+}
