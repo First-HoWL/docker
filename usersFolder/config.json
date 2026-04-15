@@ -1,4 +1,4 @@
 {
-    "endphostoint": "container-server",
+    "host": "container-server",
     "port": 7000
 }

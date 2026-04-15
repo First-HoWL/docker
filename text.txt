@@ -2,3 +2,11 @@ client build - docker build -f client.Dockerfile -t py-test-client:0.0.1 .
 client start - docker run -it --network my-network -v ${pwd}:/app/data py-test-client:0.0.1
 server build - docker build -f server.Dockerfile -t py-test-server:0.0.1 .
 server start - docker run -it --network my-network --name container-server -p 7000:7000 -v ${pwd}:/app/logs py-test-server:0.0.1
+
+
+python backend, react frontend
+    docker build -t react-front:0.0.1 .
+    docker run -d -it -p 8081:80 react-front:0.0.1
+
+    docker build -t py-back:0.0.1 .
+    docker run -it -p 8080:5000 py-back:0.0.1
