@@ -16,13 +16,13 @@ CORS(app)
 def hello_world():
     with open('motd/response.txt', 'r') as f:
         motd = f.read()
-    return motd
+    return json.dumps(motd)
 
 @app.route("/edit/<newText>")
 def edit(newText):
     with open('motd/response.txt', 'w', encoding="utf-8") as f:
         f.write(newText)
-    return newText
+    return json.dumps(newText)
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=5000)

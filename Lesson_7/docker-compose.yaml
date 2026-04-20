@@ -5,3 +5,7 @@ services:
       - ../motd:/app/motd
     ports:
       - 8080:5000
+  frontend:
+    build: ./frontend
+    ports:
+      - 8081:80

@@ -218,7 +218,7 @@ __marimo__/
 .streamlit/secrets.toml
 
 
-
+Lesson_7/frontend/node_modules
 /node_modules
 /frontend/node_modules
 /backend/node_modules
